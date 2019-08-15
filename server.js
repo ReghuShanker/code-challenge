@@ -10,9 +10,10 @@ const app = express()
 
 app.use(bodyParser.json())
 
-app.put(/^\/*/,api.putStudent)
+app.put(/^\/*/, api.putStudent)
+app.get(/^\/*/, api.getStudent)
+app.delete(/^\/*/, api.delStudent)
 app.get('/health', api.getHealth)
-
 
 app.use(middleware.handleError)
 app.use(middleware.notFound)
