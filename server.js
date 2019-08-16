@@ -10,9 +10,11 @@ const app = express()
 
 app.use(bodyParser.json())
 
-app.put(/^\/*/, api.putStudent)
-app.get(/^\/*/, api.getStudent)
-app.delete(/^\/*/, api.delStudent)
+let regExp = /^\/(?!health).*/
+
+app.put(regExp, api.putStudent)
+app.get(regExp, api.getStudent)
+app.delete(regExp, api.delStudent)
 app.get('/health', api.getHealth)
 
 app.use(middleware.handleError)
