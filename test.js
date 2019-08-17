@@ -15,31 +15,82 @@ tape('health', async function (t) {
   })
 })
 
-tape('putStudent', async function (t) {
-  const url = `${endpoint}/rn1abu8/courses/calculus/quizzes/ye0ab61`
-  let reqObj = { 'score': '98' }
-  jsonist.put(url, reqObj, (err, body) => {
+tape('have PUT api that put property to existing student', async function (t) {
+  const url = `${endpoint}/student_1/courses/test`
+  const data = { attr_1: 'value_1' }
+  jsonist.put(url, data, (err, body) => {
     if (err) t.error(err)
-    t.ok(body.success, 'put student Successful')
+    t.ok(body.success, 'sets attribute at given location')
     t.end()
   })
 })
 
-tape('delStudent', async function (t) {
-  const url = `${endpoint}/rn1abu8/courses/calculus/quizzes/ye0ab61`
-  jsonist.delete(url, (err, body) => {
-    if (err) t.error(err)
-    t.ok(body.success, 'delete student successful')
-    t.end()
-  })
-})
-
-tape('getStudent', async function (t) {
-  const url = `${endpoint}/rn1abu8/courses/calculus`
+tape('have GET api that gets property of existing student', async function (t) {
+  const url = `${endpoint}/student_1/courses/test`
   jsonist.get(url, (err, body) => {
-    let expeObj = { 'quizzes': { } }
+    const expectedData = { attr_1: 'value_1' }
     if (err) t.error(err)
-    t.same(expeObj, body.data, 'get student successful')
+    console.log(body.data)
+    t.same(body.data, expectedData, 'gets value of attribute at given location')
+    t.end()
+  })
+})
+
+tape('have GET api that gives 404 to non existing student', async function (t) {
+  const url = `${endpoint}/student_2/test_props`
+  jsonist.get(url, (err, body, res) => {
+    if (err) {
+      t.error('should not throw error but 404 status code for non existent student')
+    }
+    t.ok(res.statusCode === 404, 'throws 404 for non existent student')
+    t.end()
+  })
+})
+
+tape('have GET api that gives 404 to non existing property', async function (t) {
+  const url = `${endpoint}/student_2/test_props`
+  jsonist.get(url, (err, body, res) => {
+    if (err) {
+      t.error('should not throw error but 404 status code for non existent student')
+    }
+    t.ok(res.statusCode === 404, 'throws 404 for non existent property of student')
+    t.end()
+  })
+})
+
+tape('have DELETE api that deletes property of existing student', async function (t) {
+  const putUrl = `${endpoint}/student_1/courses/delete_test`
+  const putValue = { delete_value: 'test_value' }
+  /* setting up test data */
+  jsonist.put(putUrl, putValue, (err, putBody) => {
+    const url = `${endpoint}/student_1/courses/delete_test/delete_value`
+    if (err) t.error(err)
+    jsonist.delete(url, (err, body) => {
+      if (err) t.error(err)
+      t.ok(body.success, 'deletes value of attribute at given location')
+      t.end()
+    })
+  })
+})
+
+tape('have DELETE api that gives 404 to non existing student', async function (t) {
+  const url = `${endpoint}/student_2/test_props`
+  jsonist.delete(url, (err, body, res) => {
+    if (err) {
+      t.error('should not throw error but 404 status code for non existent student')
+    }
+    t.ok(res.statusCode === 404, 'throws 404 for non existent student')
+    t.end()
+  })
+})
+
+tape('have DELETE api that gives 404 to non existing property', async function (t) {
+  const url = `${endpoint}/student_2/test_props`
+  jsonist.delete(url, (err, body, res) => {
+    if (err) {
+      t.error('should not throw error but 404 status code for non existent student')
+    }
+    t.ok(res.statusCode === 404, 'throws 404 for non existent property of student')
     t.end()
   })
 })
